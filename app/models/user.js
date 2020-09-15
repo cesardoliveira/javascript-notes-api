@@ -13,7 +13,7 @@ userSchema.pre('save', function (next) {
     if (this.isNew || this.isModified('password')) {
         bcrypt.hash(this.password, 10, (error, hashPassword) => {
             if (error)
-                next(error)
+                next(error);
             else {
                 this.password = hashPassword;
                 next();
@@ -21,5 +21,15 @@ userSchema.pre('save', function (next) {
         })
     }
 });
+
+userSchema.methods.isCorrectPassword = function (password, callback) {
+    bcrypt.compare(password, this.password, (err, same) => {
+        if (err)
+            callback(err);
+        else {
+            callback(err, same);
+        }
+    })
+}
 
 module.exports = mongoose.model('User', userSchema);
