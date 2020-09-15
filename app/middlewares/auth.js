@@ -6,14 +6,11 @@ const User = require('../models/user');
 
 const WithAuth = (req, res, next) => {
     const token = req.headers['token'];
-    if (!token) {
-        res.status(481).json({ error: 'Unauthorized: token not provided. ' });
-    } else {
+    if (token) {
         jwt.verify(token, secret, (err, decoded) => {
             if (err) {
                 res.status(401).json({ error: 'Unauthorized: token invalid or expired. ' });
-            }
-            else {
+            } else {
                 User.findOne({ email: decoded.email }).then(user => {
                     req.user = user;
                     next();
@@ -22,6 +19,8 @@ const WithAuth = (req, res, next) => {
                 })
             }
         })
+    } else {
+        res.status(481).json({ error: 'Unauthorized: token not provided. ' });
     }
 }
 
