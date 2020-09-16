@@ -37,7 +37,7 @@ router.get('/search', withAuth, async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Unable to get a note. ' });
     }
-})
+});
 
 router.get('/:id', withAuth, async (req, res) => {
     try {
@@ -66,7 +66,7 @@ router.put('/:id', withAuth, async (req, res) => {
             if (isOwner(req.user, note)) {
                 let note = await Note.findOneAndUpdate(
                     { _id: id },
-                    { $set: { title: title, body: body } },
+                    { $set: { title: title, body: body, updated_at: Date.now() } },
                     { upsert: true, 'new': true }
                 );
                 res.json(note);

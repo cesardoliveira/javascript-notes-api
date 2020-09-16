@@ -4,6 +4,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const secret = process.env.JWT_TOKEN;
+const withAuth = require('../middlewares/auth');
 
 router.post('/register', async (req, res) => {
   try {
@@ -14,7 +15,7 @@ router.post('/register', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Error registering new user. ' });
   }
-})
+});
 
 router.post('/login', async (req, res) => {
   try {
@@ -36,6 +37,6 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Interval error, please try again. ' });
   }
-})
+});
 
 module.exports = router;
