@@ -6,10 +6,9 @@ require('dotenv').config();
 const secret = process.env.JWT_TOKEN;
 
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
-  const user = new User({ name, email, password });
-
   try {
+    const { name, email, password } = req.body;
+    const user = new User({ name, email, password });
     await user.save();
     res.status(200).json(user);
   } catch (error) {
@@ -18,9 +17,8 @@ router.post('/register', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
     let user = await User.findOne({ email });
 
     if (user) {
