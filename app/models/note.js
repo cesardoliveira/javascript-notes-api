@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 
 let noteSchema = new mongoose.Schema({
     title: String,

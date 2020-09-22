@@ -51,7 +51,6 @@ router.put('/', withAuth, async (req, res) => {
         res.status(200).json(user);
 
     } catch (error) {
-        console.log(error)
         res.status(500).json({ error: 'Unable to update a user. ' });
     }
 });
@@ -65,7 +64,6 @@ router.put('/password', withAuth, async (req, res) => {
         await user.save();
         res.status(200).json(user);
     } catch (error) {
-        console.log(error)
         res.status(500).json({ error: 'Unable to update a user password. ' });
     }
 });
@@ -76,7 +74,6 @@ router.delete('/', withAuth, async (req, res) => {
         await user.delete();
         res.status(200).json({ success: `User deleted. ` });
     } catch (error) {
-        console.log(error)
         res.status(500).json({ error: 'Unable to delete a user. ' });
     }
 });
@@ -86,7 +83,6 @@ router.get('/', async (req, res) => {
         let users = await User.find();
         res.status(200).json(users);
     } catch (error) {
-        console.log(error)
         res.status(500).json({ error: 'Unable to get users. ' });
     }
 });
