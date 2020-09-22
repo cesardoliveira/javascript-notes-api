@@ -26,6 +26,7 @@ router.get('/', withAuth, async (req, res) => {
 router.get('/search', withAuth, async (req, res) => {
     try {
         const { query } = req.query;
+        
         let notesByTitle = await Note
             .find({ author: req.user._id })
             .find({ $text: { $search: query } });
@@ -42,6 +43,7 @@ router.get('/search', withAuth, async (req, res) => {
 router.get('/:id', withAuth, async (req, res) => {
     try {
         const { id } = req.params;
+        
         let note = await Note.findById(id);
         if (note) {
             if (isOwner(req.user, note)) {
@@ -61,6 +63,7 @@ router.put('/:id', withAuth, async (req, res) => {
     try {
         const { title, body } = req.body;
         const { id } = req.params;
+        
         let note = await Note.findById(id);
         if (note) {
             if (isOwner(req.user, note)) {
@@ -84,6 +87,7 @@ router.put('/:id', withAuth, async (req, res) => {
 router.delete('/:id', withAuth, async (req, res) => {
     try {
         const { id } = req.params;
+        
         let note = await Note.findById(id);
         if (note) {
             if (isOwner(req.user, note)) {
