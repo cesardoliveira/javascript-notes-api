@@ -9,9 +9,16 @@ const withAuth = require('../middlewares/auth');
 router.post('/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        const user = new User({ name, email, password });
-        await user.save();
-        res.status(200).json(user);
+
+        let userByEmail = await User.findOne({ email: email });
+        if (userByEmail) {
+            res.status(401).json({ error: 'That email is taken. Try another.' });
+        } else {
+
+            const user = new User({ name, email, password });
+            await user.save();
+            res.status(200).json(user);
+        }
     } catch (error) {
         res.status(500).json({ error: 'Error registering new user. ' });
     }
@@ -20,8 +27,8 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        let user = await User.findOne({ email });
 
+        let user = await User.findOne({ email: email });
         if (user) {
             user.isCorrectPassword(password, function (err, same) {
                 if (same) {
@@ -43,12 +50,17 @@ router.put('/', withAuth, async (req, res) => {
     try {
         const { name, email } = req.body;
 
-        let user = await User.findOneAndUpdate(
-            { _id: req.user._id },
-            { $set: { name: name, email: email, update_at: Date.now() } },
-            { upsert: true, 'new': true }
-        )
-        res.status(200).json(user);
+        let user = await User.findOne({ email: email });
+        if (isOwner(user, req.user)) {
+            let user = await User.findOneAndUpdate(
+                { _id: req.user._id },
+                { $set: { name: name, email: email, update_at: Date.now() } },
+                { upsert: true, 'new': true }
+            )
+            res.status(200).json(user);
+        } else {
+            res.status(401).json({ error: 'That email is taken. Try another.' });
+        }
 
     } catch (error) {
         res.status(500).json({ error: 'Unable to update a user. ' });
@@ -86,5 +98,9 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Unable to get users. ' });
     }
 });
+
+const isOwner = (userDB, userLogged) => {
+    return (JSON.stringify(userDB._id) == JSON.stringify(userLogged._id));
+};
 
 module.exports = router;
