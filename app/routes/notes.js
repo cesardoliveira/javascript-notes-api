@@ -10,7 +10,7 @@ router.post('/', withAuth, async (req, res) => {
         await note.save();
         res.status(200).json(note);
     } catch (error) {
-        res.status(500).json({ error: 'Unable to create a new note. ' });
+        res.status(500).json({ error: 'Unable to create a new note.' });
     }
 });
 
@@ -19,7 +19,7 @@ router.get('/', withAuth, async (req, res) => {
         let notes = await Note.find({ author: req.user._id });
         res.status(200).json(notes);
     } catch (error) {
-        res.status(500).json({ error: 'Unable to get notes. ' });
+        res.status(500).json({ error: 'Unable to get notes.' });
     }
 });
 
@@ -33,10 +33,10 @@ router.get('/search', withAuth, async (req, res) => {
         if (notesByTitle.length > 0) {
             res.status(200).json(notesByTitle);
         } else {
-            res.status(403).json({ error: 'Any notes was found. ' });
+            res.status(403).json({ error: 'Any notes was found.' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Unable to get a note. ' });
+        res.status(500).json({ error: 'Unable to get a note.' });
     }
 });
 
@@ -49,13 +49,13 @@ router.get('/:id', withAuth, async (req, res) => {
             if (isOwner(req.user, note)) {
                 res.status(200).json(note);
             } else {
-                res.status(403).json({ error: 'Permission denied. ' });
+                res.status(403).json({ error: 'Permission denied.' });
             }
         } else {
-            res.status(404).json({ error: `Note id: ${id} was not found. ` });
+            res.status(404).json({ error: `Note id: ${id} was not found.` });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Unable to get a note. ' });
+        res.status(500).json({ error: 'Unable to get a note.' });
     }
 });
 
@@ -74,13 +74,13 @@ router.put('/:id', withAuth, async (req, res) => {
                 );
                 res.status(200).json(note);
             } else {
-                res.status(403).json({ error: 'Permission denied to update this note. ' });
+                res.status(403).json({ error: 'Permission denied to update this note.' });
             }
         } else {
-            res.status(404).json({ error: `Note id: ${id} was not found. ` });
+            res.status(404).json({ error: `Note id: ${id} was not found.` });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Unable to update a note. ' });
+        res.status(500).json({ error: 'Unable to update a note.' });
     }
 });
 
@@ -94,15 +94,15 @@ router.delete('/:id', withAuth, async (req, res) => {
                 await Note.findOneAndDelete(
                     { _id: id }
                 );
-                res.status(200).json({ sucess: `Note id: ${id} was deleted. ` });
+                res.status(200).json({ sucess: `Note id: ${id} was deleted.` });
             } else {
-                res.status(403).json({ error: 'Permission denied to delete this note. ' });
+                res.status(403).json({ error: 'Permission denied to delete this note.' });
             }
         } else {
-            res.status(404).json({ error: `Note id: ${id} was not found. ` });
+            res.status(404).json({ error: `Note id: ${id} was not found.` });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Unable to delete a note. ' });
+        res.status(500).json({ error: 'Unable to delete a note.' });
     }
 });
 
