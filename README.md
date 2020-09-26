@@ -23,8 +23,10 @@ This command installs a package, and any packages that it depends on.
 ```git
 PORT=3001 npm run dev
 ```
+Runs the app in the development mode.<br />
+Open [`http://localhost:3001`](http://localhost:3001) to view it in the browser.
 
-The server will reload if you make edits.<br />
+The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-Check the frontend app: [`javascript-notes-api`](https://github.com/cesardoliveira/javascript-notes-api)
+Check the frontend app: [`javascript-notes-app`](https://github.com/cesardoliveira/javascript-notes-app)
