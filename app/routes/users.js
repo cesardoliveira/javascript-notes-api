@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
             res.status(200).json(user);
         }
     } catch (error) {
-        res.status(500).json({ error: 'Error registering new user. ' });
+        res.status(500).json({ error: 'Error registering new user.' });
     }
 });
 
@@ -35,14 +35,14 @@ router.post('/login', async (req, res) => {
                     const token = jwt.sign({ email }, secret, { expiresIn: '10d' });
                     res.status(200).json({ user: user, token: token });
                 } else {
-                    res.status(401).json({ error: 'Wrong password. Try again or click Forgot password to reset it. ' });
+                    res.status(401).json({ error: 'Wrong password. Try again.' });
                 }
             })
         } else {
-            res.status(401).json({ error: "Couldn't find your e-mail. " });
+            res.status(401).json({ error: "Couldn't find your e-mail." });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Interval error, please try again. ' });
+        res.status(500).json({ error: 'Interval error, please try again.' });
     }
 });
 
@@ -51,19 +51,29 @@ router.put('/', withAuth, async (req, res) => {
         const { name, email } = req.body;
 
         let user = await User.findOne({ email: email });
-        if (isOwner(user, req.user)) {
+        if (user) {
+            if (isOwner(user, req.user)) {
+                let user = await User.findOneAndUpdate(
+                    { _id: req.user._id },
+                    { $set: { name: name, email: email, update_at: Date.now() } },
+                    { upsert: true, 'new': true }
+                )
+                res.status(200).json(user);
+            } else {
+                res.status(401).json({ error: 'That email is taken. Try another.' });
+            }
+        } else {
             let user = await User.findOneAndUpdate(
                 { _id: req.user._id },
                 { $set: { name: name, email: email, update_at: Date.now() } },
                 { upsert: true, 'new': true }
             )
             res.status(200).json(user);
-        } else {
-            res.status(401).json({ error: 'That email is taken. Try another.' });
         }
 
     } catch (error) {
-        res.status(500).json({ error: 'Unable to update a user. ' });
+        console.log(error);
+        res.status(500).json({ error: 'Unable to update a user.' });
     }
 });
 
@@ -76,7 +86,7 @@ router.put('/password', withAuth, async (req, res) => {
         await user.save();
         res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({ error: 'Unable to update a user password. ' });
+        res.status(500).json({ error: 'Unable to update a user password.' });
     }
 });
 
@@ -84,9 +94,9 @@ router.delete('/', withAuth, async (req, res) => {
     try {
         let user = await User.findOne({ _id: req.user._id });
         await user.delete();
-        res.status(200).json({ success: `User deleted. ` });
+        res.status(200).json({ success: `User deleted.` });
     } catch (error) {
-        res.status(500).json({ error: 'Unable to delete a user. ' });
+        res.status(500).json({ error: 'Unable to delete a user.' });
     }
 });
 
@@ -95,11 +105,13 @@ router.get('/', async (req, res) => {
         let users = await User.find();
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ error: 'Unable to get users. ' });
+        res.status(500).json({ error: 'Unable to get users.' });
     }
 });
 
 const isOwner = (userDB, userLogged) => {
+    console.log(userDB)
+    console.log(userLogged)
     return (JSON.stringify(userDB._id) == JSON.stringify(userLogged._id));
 };
 
