@@ -12,6 +12,12 @@ JSON Web Token (JWT) need a secret string which is then used to encrypt this use
 
 More details check this article:[`JSON Web Token (JWT) — The right way of implementing, with Node.js`](https://medium.com/@siddharthac6/json-web-token-jwt-the-right-way-of-implementing-with-node-js-65b8915d550e)
 
+Also, at the same .env file set a variable MONGO_URL like example below:
+
+```
+MONGO_URL=mongodb://localhost/javascript-notes
+```
+
 ## Available Scripts
 Clone repo, in the project directory, you can run:
 ```git
